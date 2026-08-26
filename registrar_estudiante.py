@@ -1,9 +1,14 @@
-import guardar_datos
-def registrar_estudiante_interactivo(archivo="estudiantes.json"):
+from guardar_datos import cargar_json, guardar_json
+
+ARCHIVO_ESTUDIANTES = "estudiantes.json"
+
+def registrar_estudiante_interactivo():
     print("\n--- Registro de Nuevos Estudiantes ---")
     
+    estudiantes = cargar_json(ARCHIVO_ESTUDIANTES, {})
+
     documento = input("Ingrese el número de documento: ").strip()
-    nombre = input("Ingrese el nombre completo: ").strip()
+    nombre = input("Ingrese el nombre completo: ").strip().upper()
     correo = input("Ingrese el correo electrónico: ").strip()
     programa = input("Ingrese el programa académico: ").strip()
 
@@ -27,11 +32,12 @@ def registrar_estudiante_interactivo(archivo="estudiantes.json"):
         "programa_academico": programa
     }
 
+    guardar_json(ARCHIVO_ESTUDIANTES, estudiantes)
+    print(f"✅ Estudiante {nombre} registrado con éxito.")
 
 if __name__ == "__main__":
     while True:
         registrar_estudiante_interactivo()
-        
         continuar = input("\n¿Desea registrar otro estudiante? (s/n): ").strip().lower()
         if continuar != 's':
             print("\n¡Proceso finalizado. Saliendo del sistema...")
