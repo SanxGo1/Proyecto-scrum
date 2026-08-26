@@ -1,6 +1,3 @@
-import json
-import os
-
 def registrar_estudiante_interactivo(archivo="estudiantes.json"):
     """
     Pregunta al usuario los datos por consola, valida duplicados de documento
