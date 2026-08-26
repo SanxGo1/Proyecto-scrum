@@ -1,0 +1,16 @@
+[
+    {
+        "codigo_serie": "10291",
+        "tipo": "Computador",
+        "marca": "HP",
+        "modelo": "3432",
+        "estado": "Óptimo"
+    },
+    {
+        "codigo_serie": "22734",
+        "tipo": "Portátil",
+        "marca": "Canon",
+        "modelo": "2129",
+        "estado": "Bueno"
+    }
+]
