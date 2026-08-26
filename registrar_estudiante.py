@@ -1,3 +1,4 @@
+import guardar_datos
 def registrar_estudiante_interactivo(archivo="estudiantes.json"):
     print("\n--- Registro de Nuevos Estudiantes ---")
     
