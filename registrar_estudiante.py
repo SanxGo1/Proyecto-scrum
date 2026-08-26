@@ -1,5 +1,23 @@
+
+
+
+
+
+import json
+import os
+
+
 def registrar_estudiante_interactivo(archivo="estudiantes.json"):
     print("\n--- Registro de Nuevos Estudiantes ---")
+
+    if os.path.exists(archivo):
+        try:
+            with open(archivo, "r", encoding="utf-8") as f:
+                estudiantes = json.load(f)
+        except (json.JSONDecodeError, OSError):
+            estudiantes = {}
+    else:
+        estudiantes = {}
     
     documento = input("Ingrese el número de documento: ").strip()
     nombre = input("Ingrese el nombre completo: ").strip()
@@ -26,12 +44,17 @@ def registrar_estudiante_interactivo(archivo="estudiantes.json"):
         "programa_academico": programa
     }
 
+    with open(archivo, "w", encoding="utf-8") as f:
+        json.dump(estudiantes, f, ensure_ascii=False, indent=4)
 
-if __name__ == "__main__":
-    while True:
-        registrar_estudiante_interactivo()
-        
-        continuar = input("\n¿Desea registrar otro estudiante? (s/n): ").strip().lower()
-        if continuar != 's':
-            print("\n¡Proceso finalizado. Saliendo del sistema...")
-            break
+    print(f"✅ Estudiante registrado correctamente en '{archivo}'.")
+
+
+
+while True:
+    registrar_estudiante_interactivo()
+
+    continuar = input("\n¿Desea registrar otro estudiante? (s/n): ").strip().lower()
+    if continuar != 's':
+        print("\n¡Proceso finalizado. Saliendo del sistema...")
+        break

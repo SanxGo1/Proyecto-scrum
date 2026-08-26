@@ -46,7 +46,7 @@ def menu():
 			consola.pausa()
 			consola.limpiar_pantalla()
 		elif opcion == "5":
-			devolucion.realizar_devolucion()
+			devolucion.procesar_devolucion_computador()
 			consola.pausa()
 			consola.limpiar_pantalla()
 		elif opcion == "6":

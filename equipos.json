@@ -12,5 +12,12 @@
         "marca": "Canon",
         "modelo": "2129",
         "estado": "Bueno"
+    },
+    {
+        "codigo_serie": "62253",
+        "tipo": "Tablet",
+        "marca": "Microsoft",
+        "modelo": "7239",
+        "estado": "Malo"
     }
 ]
