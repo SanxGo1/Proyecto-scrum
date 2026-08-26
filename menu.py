@@ -46,7 +46,7 @@ def menu():
 			consola.pausa()
 			consola.limpiar_pantalla()
 		elif opcion == "5":
-			prestamos.realizar_devolucion()
+			devolucion.realizar_devolucion()
 			consola.pausa()
 			consola.limpiar_pantalla()
 		elif opcion == "6":
