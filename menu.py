@@ -42,7 +42,7 @@ def menu():
 			consola.pausa()
 			consola.limpiar_pantalla()
 		elif opcion == "4":
-			prestamos.realizar_prestamo()
+			prestamos.registrar_prestamo()
 			consola.pausa()
 			consola.limpiar_pantalla()
 		elif opcion == "5":
