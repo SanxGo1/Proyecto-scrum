@@ -7,7 +7,9 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from registroequipos import registrar_equipo
 from consultarequipos import consultar_equipos
 import consola as consola
-
+import registrar_estudiante
+import prestamos
+import devolucion 
 
 
 
@@ -19,7 +21,11 @@ def menu():
 		print("\n--- MENÚ ---")
 		print("1. Registrar equipo")
 		print("2. Consultar equipos")
-		print("3. Salir")
+		print("3. Registrar estudiantes")
+		print("4. Realizar préstamos")
+		print("5. realizar devoluciones")
+		print("6. Salir")
+
 
 		opcion = input("Seleccione una opción: ")
 
@@ -32,6 +38,18 @@ def menu():
 			consola.pausa()
 			consola.limpiar_pantalla()
 		elif opcion == "3":
+			registrar_estudiante()
+			consola.pausa()
+			consola.limpiar_pantalla()
+		elif opcion == "4":
+			prestamos.realizar_prestamo()
+			consola.pausa()
+			consola.limpiar_pantalla()
+		elif opcion == "5":
+			prestamos.realizar_devolucion()
+			consola.pausa()
+			consola.limpiar_pantalla()
+		elif opcion == "6":
 			print("Hasta luego.")
 			consola.pausa()
 			break
