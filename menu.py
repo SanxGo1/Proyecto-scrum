@@ -1,8 +1,12 @@
 
 
-from logica.registroequipos import *
-from logica.consultarequipos import *
-import interfaz.consola as consola
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
+from registroequipos import registrar_equipo
+from consultarequipos import consultar_equipos
+import consola as consola
 
 
 
