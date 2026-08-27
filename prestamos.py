@@ -66,7 +66,20 @@ def registrar_prestamo():
         print(f"❌ Error: El equipo '{cod_equipo}' se encuentra en mal estado físico y no se puede prestar.")
         return False
 
-    id_prestamo = f"PR-{len(prestamos) + 1}"
+    siguiente_id = 1
+    if prestamos:
+        ids_numericos = []
+        for k in prestamos.keys():
+            if k.startswith("PR-"):
+                try:
+                    ids_numericos.append(int(k.split("-")[1]))
+                except ValueError:
+                    pass
+        if ids_numericos:
+            siguiente_id = max(ids_numericos) + 1
+            
+    id_prestamo = f"PR-{siguiente_id}"
+
     prestamos[id_prestamo] = {
         "id_prestamo": id_prestamo,
         "documento_estudiante": doc_estudiante,
