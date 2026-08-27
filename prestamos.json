@@ -1,13 +1,5 @@
 {
-    "PR-1": {
-        "estado": "disponible",
-        "documento": null,
-        "nombre": null,
-        "correo": null,
-        "programa_academico": null,
-        "fecha_prestamo": null,
-        "fecha_devolucion": "2026-08-27 14:52:14"
-    },
+    
     "PR-2": {
         "id_prestamo": "PR-2",
         "documento_estudiante": "1092102",
