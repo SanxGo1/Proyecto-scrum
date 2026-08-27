@@ -1,39 +1,41 @@
 import json
 from pathlib import Path
 from datetime import datetime
-from guardar_datos import guardar_json
 
 BASE_DIR = Path(__file__).resolve().parent
-RUTA_ESTUDIANTES = str(BASE_DIR / "estudiantes.json")
-RUTA_EQUIPOS = str(BASE_DIR / "equipos.json")
-RUTA_PRESTAMOS = str(BASE_DIR / "prestamos.json")
-RUTA_DEVOLUCIONES = str(BASE_DIR / "devoluciones.json")
+RUTA_ESTUDIANTES = BASE_DIR / "estudiantes.json"
+RUTA_EQUIPOS = BASE_DIR / "equipos.json"
+RUTA_PRESTAMOS = BASE_DIR / "prestamos.json"
+RUTA_DEVOLUCIONES = BASE_DIR / "devoluciones.json"
 
-def leer_json_seguro(ruta, defecto):
-    ruta_path = Path(ruta)
-    if ruta_path.exists():
+def leer_json_absoluto(path_archivo, defecto):
+    if path_archivo.exists():
         try:
-            with open(ruta_path, "r", encoding="utf-8") as f:
+            with open(path_archivo, "r", encoding="utf-8") as f:
                 datos = json.load(f)
                 return datos if datos else defecto
-        except:
+        except Exception:
             try:
-                with open(ruta_path, "r") as f:
+                with open(path_archivo, "r", encoding="latin-1") as f:
                     datos = json.load(f)
                     return datos if datos else defecto
-            except:
-                pass
+            except Exception:
+                return defecto
     return defecto
+
+def guardar_json_absoluto(path_archivo, datos):
+    with open(path_archivo, "w", encoding="utf-8") as f:
+        json.dump(datos, f, indent=4, ensure_ascii=False)
 
 def procesar_devolucion_computador():
     print("\n--- Módulo de Devolución de Computadores ---")
     
-    estudiantes = leer_json_seguro(RUTA_ESTUDIANTES, {})
-    prestamos = leer_json_seguro(RUTA_PRESTAMOS, {})
-    equipos = leer_json_seguro(RUTA_EQUIPOS, [])
+    estudiantes = leer_json_absoluto(RUTA_ESTUDIANTES, {})
+    prestamos = leer_json_absoluto(RUTA_PRESTAMOS, {})
+    equipos = leer_json_absoluto(RUTA_EQUIPOS, [])
 
     if not prestamos:
-        print(f"❌ Error: El archivo de préstamos está vacío o no existe.")
+        print(f"❌ Error: El archivo de préstamos está vacío o no se encuentra en {RUTA_PRESTAMOS}.")
         return
 
     cedula_buscar = input("Ingrese el número de cédula del estudiante: ").strip()
@@ -52,7 +54,7 @@ def procesar_devolucion_computador():
         estudiante_existe = any(str(e.get("documento", "")) == cedula_buscar for e in estudiantes if isinstance(e, dict))
 
     if not estudiante_existe:
-        print(f"⚠️ Advertencia: La cédula '{cedula_buscar}' no aparece registrada en 'estudiantes.json'. Verificando préstamos activos...")
+        print(f"⚠️ Advertencia: La cédula '{cedula_buscar}' no aparece en 'estudiantes.json'. Verificando préstamos...")
 
     equipos_del_usuario = []
     if isinstance(prestamos, dict):
@@ -112,10 +114,10 @@ def procesar_devolucion_computador():
         equipos[cod_equipo]["disponibilidad"] = "disponible"
 
     try:
-        guardar_json(RUTA_PRESTAMOS, prestamos)
-        guardar_json(RUTA_EQUIPOS, equipos)
+        guardar_json_absoluto(RUTA_PRESTAMOS, prestamos)
+        guardar_json_absoluto(RUTA_EQUIPOS, equipos)
 
-        devoluciones = leer_json_seguro(RUTA_DEVOLUCIONES, [])
+        devoluciones = leer_json_absoluto(RUTA_DEVOLUCIONES, [])
         if not isinstance(devoluciones, list):
             devoluciones = []
 
@@ -126,7 +128,7 @@ def procesar_devolucion_computador():
             "fecha_devolucion": fecha_hoy
         })
 
-        guardar_json(RUTA_DEVOLUCIONES, devoluciones)
+        guardar_json_absoluto(RUTA_DEVOLUCIONES, devoluciones)
 
         print(f"\n✅ ¡Devolución completada con éxito!")
         print(f"   - ID Préstamo: {codigo_encontrado}")
