@@ -1,15 +1,39 @@
+import json
+from pathlib import Path
 from datetime import datetime
-from guardar_datos import cargar_json, guardar_json
+from guardar_datos import guardar_json
 
-def procesar_devolucion_computador(archivo="prestamos.json"):
+BASE_DIR = Path(__file__).resolve().parent
+RUTA_ESTUDIANTES = str(BASE_DIR / "estudiantes.json")
+RUTA_EQUIPOS = str(BASE_DIR / "equipos.json")
+RUTA_PRESTAMOS = str(BASE_DIR / "prestamos.json")
+RUTA_DEVOLUCIONES = str(BASE_DIR / "devoluciones.json")
+
+def leer_json_seguro(ruta, defecto):
+    ruta_path = Path(ruta)
+    if ruta_path.exists():
+        try:
+            with open(ruta_path, "r", encoding="utf-8") as f:
+                datos = json.load(f)
+                return datos if datos else defecto
+        except:
+            try:
+                with open(ruta_path, "r") as f:
+                    datos = json.load(f)
+                    return datos if datos else defecto
+            except:
+                pass
+    return defecto
+
+def procesar_devolucion_computador():
     print("\n--- Módulo de Devolución de Computadores ---")
     
-    estudiantes = cargar_json("estudiantes.json", {})
-    prestamos = cargar_json(archivo, {})
-    equipos = cargar_json("equipos.json", [])
+    estudiantes = leer_json_seguro(RUTA_ESTUDIANTES, {})
+    prestamos = leer_json_seguro(RUTA_PRESTAMOS, {})
+    equipos = leer_json_seguro(RUTA_EQUIPOS, [])
 
     if not prestamos:
-        print(f"❌ Error: El archivo de préstamos '{archivo}' está vacío o no existe.")
+        print(f"❌ Error: El archivo de préstamos está vacío o no existe.")
         return
 
     cedula_buscar = input("Ingrese el número de cédula del estudiante: ").strip()
@@ -42,7 +66,7 @@ def procesar_devolucion_computador(archivo="prestamos.json"):
                     equipos_del_usuario.append((id_p, info))
 
     if not equipos_del_usuario:
-        print(f"❌ La cédula '{cedula_buscar}' no registra ningún préstamo activo en '{archivo}'.")
+        print(f"❌ La cédula '{cedula_buscar}' no registra ningún préstamo activo.")
         return
 
     print(f"\n🔍 Préstamos activos encontrados para la cédula {cedula_buscar}:")
@@ -51,7 +75,7 @@ def procesar_devolucion_computador(archivo="prestamos.json"):
         fecha_p = info.get('fecha_prestamo') or 'N/A'
         print(f"   💻 ID Préstamo: {id_p} | Código Equipo: {cod_eq} | Fecha Préstamo: {fecha_p}")
 
-    codigo_ingresado = input("\nIngrese el ID del préstamo a devolver (ej. PR-2): ").strip()
+    codigo_ingresado = input("\nIngrese el ID del préstamo a devolver (ej. PR-1): ").strip()
     
     codigo_encontrado = None
     info_prestamo = None
@@ -74,7 +98,6 @@ def procesar_devolucion_computador(archivo="prestamos.json"):
     fecha_hoy = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     prestamos[codigo_encontrado]["estado_prestamo"] = "devuelto"
-    prestamos[codigo_encontrado]["estado"] = "devuelto"
     prestamos[codigo_encontrado]["fecha_devolucion"] = fecha_hoy
 
     cod_equipo = str(info_prestamo.get("codigo_equipo") or info_prestamo.get("codigo_serie") or "")
@@ -84,16 +107,15 @@ def procesar_devolucion_computador(archivo="prestamos.json"):
             if isinstance(eq, dict):
                 codigo_actual = str(eq.get("codigo_serie") or eq.get("codigo_equipo") or "")
                 if codigo_actual == cod_equipo:
-                    eq["estado"] = "Bueno"
                     eq["disponibilidad"] = "disponible"
     elif isinstance(equipos, dict) and cod_equipo in equipos:
-        equipos[cod_equipo]["estado"] = "disponible"
+        equipos[cod_equipo]["disponibilidad"] = "disponible"
 
     try:
-        guardar_json(archivo, prestamos)
-        guardar_json("equipos.json", equipos)
+        guardar_json(RUTA_PRESTAMOS, prestamos)
+        guardar_json(RUTA_EQUIPOS, equipos)
 
-        devoluciones = cargar_json("devoluciones.json", [])
+        devoluciones = leer_json_seguro(RUTA_DEVOLUCIONES, [])
         if not isinstance(devoluciones, list):
             devoluciones = []
 
@@ -104,7 +126,7 @@ def procesar_devolucion_computador(archivo="prestamos.json"):
             "fecha_devolucion": fecha_hoy
         })
 
-        guardar_json("devoluciones.json", devoluciones)
+        guardar_json(RUTA_DEVOLUCIONES, devoluciones)
 
         print(f"\n✅ ¡Devolución completada con éxito!")
         print(f"   - ID Préstamo: {codigo_encontrado}")
