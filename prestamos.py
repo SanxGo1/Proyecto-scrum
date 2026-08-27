@@ -1,9 +1,11 @@
+from pathlib import Path
 from datetime import datetime
 from guardar_datos import cargar_json, guardar_json
 
-RUTA_ESTUDIANTES = "estudiantes.json"
-RUTA_EQUIPOS = "equipos.json"
-RUTA_PRESTAMOS = "prestamos.json"
+BASE_DIR = Path(__file__).resolve().parent
+RUTA_ESTUDIANTES = str(BASE_DIR / "estudiantes.json")
+RUTA_EQUIPOS = str(BASE_DIR / "equipos.json")
+RUTA_PRESTAMOS = str(BASE_DIR / "prestamos.json")
 
 def registrar_prestamo():
     print("\n--- Registro de Nuevo Préstamo ---")
