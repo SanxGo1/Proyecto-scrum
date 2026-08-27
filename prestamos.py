@@ -12,36 +12,34 @@ def registrar_prestamo():
     equipos = cargar_json(RUTA_EQUIPOS, []) 
     prestamos = cargar_json(RUTA_PRESTAMOS, {})
 
-    doc_estudiante = input("Ingrese el documento del estudiante: ").strip()
-    if doc_estudiante not in estudiantes:
-        print(f"❌ Error: El estudiante con documento '{doc_estudiante}' no está registrado.")
-        return False
-    
-    nombre_est = estudiantes[doc_estudiante].get("nombre", "Desconocido")
-    print(f"👤 Estudiante validado: {nombre_est}")
-
     print("\n--- Catálogo de Equipos ---")
     if not equipos:
         print("⚠️ No hay equipos registrados en el sistema.")
         return False
         
     for idx, eq in enumerate(equipos, start=1):
-        tipo = eq.get("tipo", "N/A")
-        marca = eq.get("marca", "N/A")
-        modelo = eq.get("modelo", "N/A")
-        serie = eq.get("codigo_serie", "N/A")
-        estado_fisico = eq.get("estado", "N/A")
-        
-       
-        disponibilidad = eq.get("disponibilidad", "disponible").upper()
-        
-        
-        indicador = "🟢" if disponibilidad == "DISPONIBLE" else "🔴"
-        
-        print(f"{idx}. {indicador} [{disponibilidad}] | Serie: {serie} | {tipo} {marca} {modelo} | Físico: {estado_fisico}")
+        if isinstance(eq, dict):
+            tipo = eq.get("tipo", "N/A")
+            marca = eq.get("marca", "N/A")
+            modelo = eq.get("modelo", "N/A")
+            serie = eq.get("codigo_serie", "N/A")
+            estado_fisico = eq.get("estado", "N/A")
+            
+            disponibilidad = eq.get("disponibilidad", "disponible").upper()
+            
+            indicador = "🟢" if disponibilidad == "DISPONIBLE" else "🔴"
+            
+            print(f"{idx}. {indicador} [{disponibilidad}] | Serie: {serie} | {tipo} {marca} {modelo} | Físico: {estado_fisico}")
     print("---------------------------\n")
 
-   
+    doc_estudiante = input("Ingrese el documento del estudiante: ").strip()
+    if doc_estudiante not in estudiantes:
+        print(f"❌ Error: El estudiante con documento '{doc_estudiante}' no está registrado.")
+        return False
+    
+    nombre_est = estudiantes[doc_estudiante].get("nombre", "Desconocido")
+    print(f"👤 Estudiante validado: {nombre_est}\n")
+
     cod_equipo = input("Ingrese el código de serie del equipo a prestar: ").strip()
     
     equipo_encontrado = None
@@ -66,7 +64,6 @@ def registrar_prestamo():
         print(f"❌ Error: El equipo '{cod_equipo}' se encuentra en mal estado físico y no se puede prestar.")
         return False
 
- 
     id_prestamo = f"PR-{len(prestamos) + 1}"
     prestamos[id_prestamo] = {
         "id_prestamo": id_prestamo,
