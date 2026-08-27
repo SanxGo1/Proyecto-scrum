@@ -1,6 +1,7 @@
 from pathlib import Path
 from guardar_datos import cargar_json, guardar_json
 
+
 ARCHIVO = Path(__file__).parent / "equipos.json"
 
 def pedir(msg, err="El valor no puede estar vacío."):
@@ -61,6 +62,7 @@ def registrar_equipo():
         "marca": marca,
         "modelo": modelo,
         "estado": estado,
+        
     }
     
     equipos.append(equipo)
