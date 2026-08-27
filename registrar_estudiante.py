@@ -11,7 +11,7 @@ def registrar_estudiante_interactivo(archivo=ARCHIVO_ESTUDIANTES):
     while True:
         documento = input("Ingrese el número de documento (6 a 10 dígitos): ").strip()
         if not documento.isdigit():
-            print("❌ Error: El documento debe contener únicamente números (sin letras ni caracteres especiales).")
+            print("❌ Error: El documento debe contener únicamente números.")
         elif not (6 <= len(documento) <= 10):
             print("❌ Error: El documento debe tener entre 6 y 10 caracteres.")
         elif documento in estudiantes:
@@ -24,7 +24,7 @@ def registrar_estudiante_interactivo(archivo=ARCHIVO_ESTUDIANTES):
         if not nombre:
             print("❌ Error: El nombre no puede estar vacío.")
         elif not re.match(r"^[A-ZÁÉÍÓÚÑ\s]+$", nombre):
-            print("❌ Error: El nombre solo debe contener letras (sin números ni caracteres especiales como @, ), &).")
+            print("❌ Error: El nombre solo debe contener letras.")
         else:
             break
 
@@ -50,7 +50,7 @@ def registrar_estudiante_interactivo(archivo=ARCHIVO_ESTUDIANTES):
         if not programa:
             print("❌ Error: El programa académico no puede estar vacío.")
         elif not re.match(r"^[A-Za-zÁÉÍÓÚáéíóúÑñ\s]+$", programa):
-            print("❌ Error: El programa académico solo debe contener letras (sin números ni caracteres especiales).")
+            print("❌ Error: El programa académico solo debe contener letras.")
         else:
             break
 
@@ -65,10 +65,14 @@ def registrar_estudiante_interactivo(archivo=ARCHIVO_ESTUDIANTES):
     print(f"\n✅ Estudiante {nombre} registrado con éxito en '{archivo}'.")
     return True
 
-while True:
-    registrar_estudiante_interactivo()
+def menu_registro_estudiantes():
+    while True:
+        registrar_estudiante_interactivo()
 
-    continuar = input("\n¿Desea registrar otro estudiante? (s/n): ").strip().lower()
-    if continuar != 's':
-        print("\n¡Proceso finalizado. Saliendo del sistema...")
-        break
+        continuar = input("\n¿Desea registrar otro estudiante? (s/n): ").strip().lower()
+        if continuar != 's':
+            print("\n¡Proceso de registro finalizado!")
+            break
+
+if __name__ == "__main__":
+    menu_registro_estudiantes()
