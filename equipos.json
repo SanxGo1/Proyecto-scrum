@@ -30,5 +30,13 @@
         "modelo": "0212",
         "estado": "\u00d3ptimo",
         "disponibilidad": "prestado"
+    },
+    {
+        "codigo_serie": "123412",
+        "tipo": "Computador",
+        "marca": "Lenovo",
+        "modelo": "2023",
+        "estado": "Bueno",
+        "disponibilidad": "prestado"
     }
 ]
