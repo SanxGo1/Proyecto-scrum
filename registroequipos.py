@@ -62,7 +62,7 @@ def registrar_equipo():
         "marca": marca,
         "modelo": modelo,
         "estado": estado,
-        
+        "disponibilidad": None
     }
     
     equipos.append(equipo)

@@ -52,7 +52,7 @@ def menu():
 			consola.pausa()
 			break
 		else:
-			print("Opción no válida.")
+			print("Opción no válida.ingrese un número del 1 al 6.")
 			consola.pausa()
 			consola.limpiar_pantalla()
 

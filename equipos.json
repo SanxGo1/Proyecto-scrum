@@ -6,8 +6,6 @@
         "modelo": "3432",
         "estado": "prestado"
     },
-
-    
     {
         "codigo_serie": "62253",
         "tipo": "Tablet",
@@ -21,5 +19,12 @@
         "marca": "HP",
         "modelo": "2020",
         "estado": "Bueno"
+    },
+    {
+        "codigo_serie": "223292",
+        "tipo": "Teclado",
+        "marca": "HP",
+        "modelo": "2029",
+        "estado": "\u00d3ptimo"
     }
 ]
