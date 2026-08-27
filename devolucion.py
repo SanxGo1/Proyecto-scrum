@@ -1,13 +1,6 @@
-<<<<<<< HEAD
-
-from datetime import datetime
-import json
-import os
-=======
 import os
 from datetime import datetime
 from guardar_datos import cargar_json, guardar_json
->>>>>>> 2c3b56e92cc69e7b0f462fb69046e189b81e821f
 
 def procesar_devolucion_computador(archivo="prestamos.json"):
     print("\n--- Módulo de Devolución de Computadores ---")
@@ -56,50 +49,5 @@ def procesar_devolucion_computador(archivo="prestamos.json"):
     prestamos[codigo_encontrado]["estado"] = "devuelto"
     prestamos[codigo_encontrado]["fecha_devolucion"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-<<<<<<< HEAD
-    prestamos[codigo_encontrado] = {
-        "estado": "disponible",
-        "documento": None,
-        "nombre": None,
-        "correo": None,
-        "programa_academico": None,
-        "fecha_prestamo": None,
-        "fecha_devolucion": fecha_devolucion_hoy
-    }
-
-    try:
-        with open(archivo, "w", encoding="utf-8") as f:
-            json.dump(prestamos, f, indent=4, ensure_ascii=False)
-
-        devoluciones = []
-        try:
-            with open("devolucion.json", "r", encoding="utf-8") as f:
-                contenido_devoluciones = f.read().strip()
-                if contenido_devoluciones:
-                    devoluciones = json.loads(contenido_devoluciones)
-        except (FileNotFoundError, json.JSONDecodeError, IOError):
-            devoluciones = []
-
-        if not isinstance(devoluciones, list):
-            devoluciones = []
-
-        devoluciones.append({
-            "equipo": codigo_encontrado,
-            "documento": cedula_buscar,
-            "fecha_devolucion": fecha_devolucion_hoy
-        })
-
-        with open("devolucion.json", "w", encoding="utf-8") as f:
-            json.dump(devoluciones, f, indent=4, ensure_ascii=False)
-
-        print(f"\n✅ ¡Devolución completada con éxito!")
-        print(f"   - Equipo: {codigo_encontrado}")
-        print(f"   - Nuevo Estado: **disponible**")
-        print(f"   - Fecha de devolución registrada: {fecha_devolucion_hoy}")
-        print(f"   - El equipo ha sido desvinculado del estudiante.")
-    except IOError as e:
-        print(f"❌ Error al guardar los cambios en el archivo JSON: {e}")
-=======
     guardar_json(archivo, prestamos)
     print(f"\n✅ ¡Devolución completada con éxito y guardada en '{archivo}'!")
->>>>>>> 2c3b56e92cc69e7b0f462fb69046e189b81e821f
