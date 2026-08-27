@@ -36,7 +36,7 @@ def menu():
 			consola.pausa()
 			consola.limpiar_pantalla()
 		elif opcion == "3":
-			registrar_estudiante()
+			registrar_estudiante.menu_registro_estudiantes()
 			consola.pausa()
 			consola.limpiar_pantalla()
 		elif opcion == "4":
