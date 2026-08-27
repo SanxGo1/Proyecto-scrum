@@ -30,5 +30,29 @@
         "modelo": "0212",
         "estado": "\u00d3ptimo",
         "disponibilidad": "prestado"
+    },
+    {
+        "codigo_serie": "23232",
+        "tipo": "Impresora",
+        "marca": "Lenovo",
+        "modelo": "34343",
+        "estado": "\u00d3ptimo",
+        "disponibilidad": "prestado"
+    },
+    {
+        "codigo_serie": "237232",
+        "tipo": "Monitor",
+        "marca": "HP",
+        "modelo": "21212",
+        "estado": "\u00d3ptimo",
+        "disponibilidad": "Disponible"
+    },
+    {
+        "codigo_serie": "726326",
+        "tipo": "Monitor",
+        "marca": "HP",
+        "modelo": "2232",
+        "estado": "\u00d3ptimo",
+        "disponibilidad": "Disponible"
     }
 ]
