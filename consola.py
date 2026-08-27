@@ -1,12 +1,12 @@
-import os
 import sys
+import subprocess
 
 
 def limpiar_pantalla():
-    if sys.platform == "win32":
-        os.system("cls")
+    if sys.platform.startswith("win"):
+        subprocess.run(["cmd", "/c", "cls"], check=False)
     else:
-        os.system("clear")
+        subprocess.run(["clear"], check=False)
 
 
 def pausa(mensaje="Presione Enter para continuar..."):
