@@ -52,7 +52,7 @@ def registrar_equipo():
         marca = pedir("Especifique marca: ")
 
     modelo = pedir("Modelo: ")
-    estado = elegir("Estado (1-3): ", {"1": "Bueno", "2": "Óptimo", "3": "Malo"})
+    estado = elegir("Estado (1-3): ", {"1": "Bueno", "2": "Óptimo", "3": "delicado"})
 
     equipos = cargar_json(str(ARCHIVO), [])
 

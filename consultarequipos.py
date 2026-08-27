@@ -1,6 +1,7 @@
 import json
 from pathlib import Path
 
+
 ARCHIVO_EQUIPOS = Path(__file__).parent / "equipos.json"
 
 
