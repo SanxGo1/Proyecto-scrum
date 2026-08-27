@@ -2,8 +2,8 @@
     "PR-2": {
         "id_prestamo": "PR-2",
         "documento_estudiante": "1092102",
-        "codigo_equipo": "123412",
-        "fecha_prestamo": "2026-08-27 16:30:26",
+        "codigo_equipo": "23232",
+        "fecha_prestamo": "2026-08-27 16:29:17",
         "estado_prestamo": "activo"
     }
 }
