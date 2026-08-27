@@ -1,4 +1,3 @@
-import os
 from datetime import datetime
 from guardar_datos import cargar_json, guardar_json
 
@@ -41,13 +40,43 @@ def procesar_devolucion_computador(archivo="prestamos.json"):
         print("❌ El código ingresado no coincide con los préstamos activos de este estudiante.")
         return
 
-    confirmar = input(f"¿Confirma que desea procesar la devolución? (s/n): ").strip().lower()
+    confirmar = input("¿Confirma que desea procesar la devolución? (s/n): ").strip().lower()
     if confirmar != 's':
         print("⚠️ Operación de devolución cancelada.")
         return
 
-    prestamos[codigo_encontrado]["estado"] = "devuelto"
-    prestamos[codigo_encontrado]["fecha_devolucion"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    fecha_devolucion_hoy = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-    guardar_json(archivo, prestamos)
-    print(f"\n✅ ¡Devolución completada con éxito y guardada en '{archivo}'!")
+    prestamos[codigo_encontrado] = {
+        "estado": "disponible",
+        "documento": None,
+        "nombre": None,
+        "correo": None,
+        "programa_academico": None,
+        "fecha_prestamo": None,
+        "fecha_devolucion": fecha_devolucion_hoy
+    }
+
+    try:
+        guardar_json(archivo, prestamos)
+
+        devoluciones = cargar_json("devolucion.json", [])
+        if not isinstance(devoluciones, list):
+            devoluciones = []
+
+        devoluciones.append({
+            "equipo": codigo_encontrado,
+            "documento": cedula_buscar,
+            "fecha_devolucion": fecha_devolucion_hoy
+        })
+
+        guardar_json("devolucion.json", devoluciones)
+
+        print(f"\n✅ ¡Devolución completada con éxito!")
+        print(f"   - Equipo: {codigo_encontrado}")
+        print(f"   - Nuevo Estado: disponible")
+        print(f"   - Fecha de devolución registrada: {fecha_devolucion_hoy}")
+        print("   - El equipo ha sido desvinculado del estudiante.")
+        
+    except Exception as e:
+        print(f"❌ Error al guardar los cambios: {e}")
