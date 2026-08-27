@@ -17,11 +17,11 @@ def procesar_devolucion_computador(archivo="prestamos.json"):
 
     equipos_del_usuario = []
     for codigo_pc, info in prestamos.items():
-        if isinstance(info, dict) and info.get("estado") == "activo" and str(info.get("documento_estudiante")) == cedula_buscar:
+        if isinstance(info, dict) and info.get("disponibilidad") == "prestado" and str(info.get("documento_estudiante") or info.get("documento")) == cedula_buscar:
             equipos_del_usuario.append((codigo_pc, info))
 
     if not equipos_del_usuario:
-        print(f"❌ La cédula '{cedula_buscar}' no registra ningún equipo en estado 'activo'.")
+        print(f"❌ La cédula '{cedula_buscar}' no registra ningún equipo prestado a su nombre.")
         return
 
     print(f"\n🔍 ¡Equipos encontrados para el documento {cedula_buscar}:")
@@ -31,9 +31,11 @@ def procesar_devolucion_computador(archivo="prestamos.json"):
     codigo_ingresado = input("\nIngrese el ID del préstamo o código del equipo a devolver: ").strip()
     
     codigo_encontrado = None
+    info_equipo = None
     for codigo_pc, info in equipos_del_usuario:
         if codigo_ingresado in codigo_pc or codigo_ingresado in str(info.get('codigo_equipo')):
             codigo_encontrado = codigo_pc
+            info_equipo = info
             break
 
     if not codigo_encontrado:
@@ -47,8 +49,12 @@ def procesar_devolucion_computador(archivo="prestamos.json"):
 
     fecha_devolucion_hoy = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
+    estado_fisico_original = info_equipo.get("estado", "Bueno")
+
     prestamos[codigo_encontrado] = {
-        "estado": "disponible",
+        "estado": estado_fisico_original,
+        "disponibilidad": "disponible",
+        "documento_estudiante": None,
         "documento": None,
         "nombre": None,
         "correo": None,
@@ -60,21 +66,23 @@ def procesar_devolucion_computador(archivo="prestamos.json"):
     try:
         guardar_json(archivo, prestamos)
 
-        devoluciones = cargar_json("devolucion.json", [])
+        devoluciones = cargar_json("devoluciones.json", [])
         if not isinstance(devoluciones, list):
             devoluciones = []
 
         devoluciones.append({
             "equipo": codigo_encontrado,
             "documento": cedula_buscar,
+            "estado_fisico": estado_fisico_original,
             "fecha_devolucion": fecha_devolucion_hoy
         })
 
-        guardar_json("devolucion.json", devoluciones)
+        guardar_json("devoluciones.json", devoluciones)
 
         print(f"\n✅ ¡Devolución completada con éxito!")
         print(f"   - Equipo: {codigo_encontrado}")
-        print(f"   - Nuevo Estado: disponible")
+        print(f"   - Estado del Equipo: {estado_fisico_original}")
+        print(f"   - Disponibilidad: disponible")
         print(f"   - Fecha de devolución registrada: {fecha_devolucion_hoy}")
         print("   - El equipo ha sido desvinculado del estudiante.")
         
