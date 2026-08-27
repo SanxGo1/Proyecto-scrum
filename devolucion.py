@@ -1,12 +1,14 @@
 from datetime import datetime
 from guardar_datos import cargar_json, guardar_json
 
-def procesar_devolucion_computador(archivo="prestamos.json"):
+def procesar_devolucion_computador(archivo="equipos.json"):
     print("\n--- Módulo de Devolución de Computadores ---")
     
+    estudiantes = cargar_json("estudiantes.json", {})
     prestamos = cargar_json(archivo, {})
+
     if not prestamos:
-        print(f"❌ Error: El archivo '{archivo}' está vacío o no existe.")
+        print(f"❌ Error: El archivo de equipos '{archivo}' está vacío o no existe.")
         return
 
     cedula_buscar = input("Ingrese el número de cédula del estudiante: ").strip()
@@ -15,13 +17,18 @@ def procesar_devolucion_computador(archivo="prestamos.json"):
         print("❌ Error: Debe ingresar un número de cédula válido.")
         return
 
+    if cedula_buscar not in estudiantes:
+        print(f"❌ Error: La cédula '{cedula_buscar}' no se encuentra registrada en 'estudiantes.json'.")
+        return
+
     equipos_del_usuario = []
-    for codigo_pc, info in prestamos.items():
-        if isinstance(info, dict) and info.get("disponibilidad") == "prestado" and str(info.get("documento_estudiante") or info.get("documento")) == cedula_buscar:
-            equipos_del_usuario.append((codigo_pc, info))
+    if isinstance(prestamos, dict):
+        for codigo_pc, info in prestamos.items():
+            if isinstance(info, dict) and info.get("disponibilidad") == "prestado" and str(info.get("documento_estudiante") or info.get("documento")) == cedula_buscar:
+                equipos_del_usuario.append((codigo_pc, info))
 
     if not equipos_del_usuario:
-        print(f"❌ La cédula '{cedula_buscar}' no registra ningún equipo prestado a su nombre.")
+        print(f"❌ El estudiante {estudiantes[cedula_buscar].get('nombre', '')} (Cédula: {cedula_buscar}) no registra ningún equipo prestado.")
         return
 
     print(f"\n🔍 ¡Equipos encontrados para el documento {cedula_buscar}:")
@@ -48,7 +55,6 @@ def procesar_devolucion_computador(archivo="prestamos.json"):
         return
 
     fecha_devolucion_hoy = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-
     estado_fisico_original = info_equipo.get("estado", "Bueno")
 
     prestamos[codigo_encontrado] = {
