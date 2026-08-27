@@ -12,6 +12,14 @@ def registrar_prestamo():
     equipos = cargar_json(RUTA_EQUIPOS, []) 
     prestamos = cargar_json(RUTA_PRESTAMOS, {})
 
+    doc_estudiante = input("Ingrese el documento del estudiante: ").strip()
+    if doc_estudiante not in estudiantes:
+        print(f"❌ Error: El estudiante con documento '{doc_estudiante}' no está registrado.")
+        return False
+    
+    nombre_est = estudiantes[doc_estudiante].get("nombre", "Desconocido")
+    print(f"👤 Estudiante validado: {nombre_est}\n")
+
     print("\n--- Catálogo de Equipos ---")
     if not equipos:
         print("⚠️ No hay equipos registrados en el sistema.")
@@ -31,14 +39,6 @@ def registrar_prestamo():
             
             print(f"{idx}. {indicador} [{disponibilidad}] | Serie: {serie} | {tipo} {marca} {modelo} | Físico: {estado_fisico}")
     print("---------------------------\n")
-
-    doc_estudiante = input("Ingrese el documento del estudiante: ").strip()
-    if doc_estudiante not in estudiantes:
-        print(f"❌ Error: El estudiante con documento '{doc_estudiante}' no está registrado.")
-        return False
-    
-    nombre_est = estudiantes[doc_estudiante].get("nombre", "Desconocido")
-    print(f"👤 Estudiante validado: {nombre_est}\n")
 
     cod_equipo = input("Ingrese el código de serie del equipo a prestar: ").strip()
     
