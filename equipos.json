@@ -4,11 +4,11 @@
         "tipo": "Computador",
         "marca": "HP",
         "modelo": "3432",
-        "estado": "Óptimo"
+        "estado": "\u00c3\u201cptimo"
     },
     {
         "codigo_serie": "22734",
-        "tipo": "Portátil",
+        "tipo": "Port\u00c3\u00a1til",
         "marca": "Canon",
         "modelo": "2129",
         "estado": "Bueno"
@@ -19,5 +19,12 @@
         "marca": "Microsoft",
         "modelo": "7239",
         "estado": "Malo"
+    },
+    {
+        "codigo_serie": "237223",
+        "tipo": "Computador",
+        "marca": "HP",
+        "modelo": "2020",
+        "estado": "Bueno"
     }
 ]
