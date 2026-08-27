@@ -23,39 +23,41 @@ def procesar_devolucion_computador(archivo="prestamos.json"):
         if cedula_buscar in estudiantes:
             estudiante_existe = True
         else:
-            estudiante_existe = any(str(v.get("documento")) == cedula_buscar for v in estudiantes.values() if isinstance(v, dict))
+            estudiante_existe = any(str(v.get("documento", "")) == cedula_buscar for v in estudiantes.values() if isinstance(v, dict))
     elif isinstance(estudiantes, list):
-        estudiante_existe = any(str(e.get("documento")) == cedula_buscar for e in estudiantes if isinstance(e, dict))
+        estudiante_existe = any(str(e.get("documento", "")) == cedula_buscar for e in estudiantes if isinstance(e, dict))
 
     if not estudiante_existe:
-        print(f"❌ Error: La cédula '{cedula_buscar}' no se encuentra registrada en 'estudiantes.json'.")
-        return
+        print(f"⚠️ Advertencia: La cédula '{cedula_buscar}' no aparece registrada en 'estudiantes.json'. Verificando préstamos activos...")
 
     equipos_del_usuario = []
     if isinstance(prestamos, dict):
         for id_llave, info in prestamos.items():
             if isinstance(info, dict):
                 id_p = str(info.get("id_prestamo") or id_llave)
-                doc_estudiante = str(info.get("documento_estudiante") or "")
-                estado_p = str(info.get("estado_prestamo") or "").lower()
+                doc_estudiante = str(info.get("documento_estudiante") or info.get("documento") or "")
+                estado_p = str(info.get("estado_prestamo") or info.get("estado") or "").lower()
 
-                if doc_estudiante == cedula_buscar and estado_p == "activo":
+                if doc_estudiante == cedula_buscar and estado_p in ["activo", "prestado"]:
                     equipos_del_usuario.append((id_p, info))
 
     if not equipos_del_usuario:
-        print(f"❌ La cédula '{cedula_buscar}' no registra ningún préstamo en estado 'activo'.")
+        print(f"❌ La cédula '{cedula_buscar}' no registra ningún préstamo activo en '{archivo}'.")
         return
 
     print(f"\n🔍 Préstamos activos encontrados para la cédula {cedula_buscar}:")
     for id_p, info in equipos_del_usuario:
-        print(f"   💻 ID Préstamo: {id_p} | Código Equipo: {info.get('codigo_equipo')} | Fecha Préstamo: {info.get('fecha_prestamo')}")
+        cod_eq = info.get('codigo_equipo') or info.get('codigo_serie') or 'N/A'
+        fecha_p = info.get('fecha_prestamo') or 'N/A'
+        print(f"   💻 ID Préstamo: {id_p} | Código Equipo: {cod_eq} | Fecha Préstamo: {fecha_p}")
 
-    codigo_ingresado = input("\nIngrese el ID del préstamo a devolver (ej. PR-1): ").strip()
+    codigo_ingresado = input("\nIngrese el ID del préstamo a devolver (ej. PR-2): ").strip()
     
     codigo_encontrado = None
     info_prestamo = None
     for id_p, info in equipos_del_usuario:
-        if codigo_ingresado == id_p or codigo_ingresado == str(info.get("codigo_equipo")):
+        cod_eq = str(info.get("codigo_equipo") or info.get("codigo_serie") or "")
+        if codigo_ingresado == id_p or codigo_ingresado == cod_eq:
             codigo_encontrado = id_p
             info_prestamo = info
             break
@@ -72,14 +74,20 @@ def procesar_devolucion_computador(archivo="prestamos.json"):
     fecha_hoy = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     prestamos[codigo_encontrado]["estado_prestamo"] = "devuelto"
+    prestamos[codigo_encontrado]["estado"] = "devuelto"
     prestamos[codigo_encontrado]["fecha_devolucion"] = fecha_hoy
 
-    cod_equipo = str(info_prestamo.get("codigo_equipo"))
+    cod_equipo = str(info_prestamo.get("codigo_equipo") or info_prestamo.get("codigo_serie") or "")
+    
     if isinstance(equipos, list):
         for eq in equipos:
-            if isinstance(eq, dict) and str(eq.get("codigo_serie")) == cod_equipo:
-                eq["estado"] = "Bueno"
-                eq["disponibilidad"] = "disponible"
+            if isinstance(eq, dict):
+                codigo_actual = str(eq.get("codigo_serie") or eq.get("codigo_equipo") or "")
+                if codigo_actual == cod_equipo:
+                    eq["estado"] = "Bueno"
+                    eq["disponibilidad"] = "disponible"
+    elif isinstance(equipos, dict) and cod_equipo in equipos:
+        equipos[cod_equipo]["estado"] = "disponible"
 
     try:
         guardar_json(archivo, prestamos)
