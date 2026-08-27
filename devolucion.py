@@ -1,14 +1,15 @@
 from datetime import datetime
 from guardar_datos import cargar_json, guardar_json
 
-def procesar_devolucion_computador(archivo="equipos.json"):
+def procesar_devolucion_computador(archivo="prestamos.json"):
     print("\n--- Módulo de Devolución de Computadores ---")
     
     estudiantes = cargar_json("estudiantes.json", {})
     prestamos = cargar_json(archivo, {})
+    equipos = cargar_json("equipos.json", [])
 
     if not prestamos:
-        print(f"❌ Error: El archivo de equipos '{archivo}' está vacío o no existe.")
+        print(f"❌ Error: El archivo de préstamos '{archivo}' está vacío o no existe.")
         return
 
     cedula_buscar = input("Ingrese el número de cédula del estudiante: ").strip()
@@ -17,80 +18,88 @@ def procesar_devolucion_computador(archivo="equipos.json"):
         print("❌ Error: Debe ingresar un número de cédula válido.")
         return
 
-    if cedula_buscar not in estudiantes:
+    estudiante_existe = False
+    if isinstance(estudiantes, dict):
+        if cedula_buscar in estudiantes:
+            estudiante_existe = True
+        else:
+            estudiante_existe = any(str(v.get("documento")) == cedula_buscar for v in estudiantes.values() if isinstance(v, dict))
+    elif isinstance(estudiantes, list):
+        estudiante_existe = any(str(e.get("documento")) == cedula_buscar for e in estudiantes if isinstance(e, dict))
+
+    if not estudiante_existe:
         print(f"❌ Error: La cédula '{cedula_buscar}' no se encuentra registrada en 'estudiantes.json'.")
         return
 
     equipos_del_usuario = []
     if isinstance(prestamos, dict):
-        for codigo_pc, info in prestamos.items():
-            if isinstance(info, dict) and info.get("disponibilidad") == "prestado" and str(info.get("documento_estudiante") or info.get("documento")) == cedula_buscar:
-                equipos_del_usuario.append((codigo_pc, info))
+        for id_llave, info in prestamos.items():
+            if isinstance(info, dict):
+                id_p = str(info.get("id_prestamo") or id_llave)
+                doc_estudiante = str(info.get("documento_estudiante") or "")
+                estado_p = str(info.get("estado_prestamo") or "").lower()
+
+                if doc_estudiante == cedula_buscar and estado_p == "activo":
+                    equipos_del_usuario.append((id_p, info))
 
     if not equipos_del_usuario:
-        print(f"❌ El estudiante {estudiantes[cedula_buscar].get('nombre', '')} (Cédula: {cedula_buscar}) no registra ningún equipo prestado.")
+        print(f"❌ La cédula '{cedula_buscar}' no registra ningún préstamo en estado 'activo'.")
         return
 
-    print(f"\n🔍 ¡Equipos encontrados para el documento {cedula_buscar}:")
-    for codigo_pc, info in equipos_del_usuario:
-        print(f"   💻 ID Préstamo: {codigo_pc} | Equipo: {info.get('codigo_equipo')} | Fecha: {info.get('fecha_prestamo')}")
+    print(f"\n🔍 Préstamos activos encontrados para la cédula {cedula_buscar}:")
+    for id_p, info in equipos_del_usuario:
+        print(f"   💻 ID Préstamo: {id_p} | Código Equipo: {info.get('codigo_equipo')} | Fecha Préstamo: {info.get('fecha_prestamo')}")
 
-    codigo_ingresado = input("\nIngrese el ID del préstamo o código del equipo a devolver: ").strip()
+    codigo_ingresado = input("\nIngrese el ID del préstamo a devolver (ej. PR-1): ").strip()
     
     codigo_encontrado = None
-    info_equipo = None
-    for codigo_pc, info in equipos_del_usuario:
-        if codigo_ingresado in codigo_pc or codigo_ingresado in str(info.get('codigo_equipo')):
-            codigo_encontrado = codigo_pc
-            info_equipo = info
+    info_prestamo = None
+    for id_p, info in equipos_del_usuario:
+        if codigo_ingresado == id_p or codigo_ingresado == str(info.get("codigo_equipo")):
+            codigo_encontrado = id_p
+            info_prestamo = info
             break
 
     if not codigo_encontrado:
-        print("❌ El código ingresado no coincide con los préstamos activos de este estudiante.")
+        print("❌ El ID o código ingresado no coincide con los préstamos activos de este estudiante.")
         return
 
-    confirmar = input("¿Confirma que desea procesar la devolución? (s/n): ").strip().lower()
+    confirmar = input(f"¿Confirma la devolución del préstamo '{codigo_encontrado}'? (s/n): ").strip().lower()
     if confirmar != 's':
         print("⚠️ Operación de devolución cancelada.")
         return
 
-    fecha_devolucion_hoy = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    estado_fisico_original = info_equipo.get("estado", "Bueno")
+    fecha_hoy = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
-    prestamos[codigo_encontrado] = {
-        "estado": estado_fisico_original,
-        "disponibilidad": "disponible",
-        "documento_estudiante": None,
-        "documento": None,
-        "nombre": None,
-        "correo": None,
-        "programa_academico": None,
-        "fecha_prestamo": None,
-        "fecha_devolucion": fecha_devolucion_hoy
-    }
+    prestamos[codigo_encontrado]["estado_prestamo"] = "devuelto"
+    prestamos[codigo_encontrado]["fecha_devolucion"] = fecha_hoy
+
+    cod_equipo = str(info_prestamo.get("codigo_equipo"))
+    if isinstance(equipos, list):
+        for eq in equipos:
+            if isinstance(eq, dict) and str(eq.get("codigo_serie")) == cod_equipo:
+                eq["estado"] = "Bueno"
+                eq["disponibilidad"] = "disponible"
 
     try:
         guardar_json(archivo, prestamos)
+        guardar_json("equipos.json", equipos)
 
         devoluciones = cargar_json("devoluciones.json", [])
         if not isinstance(devoluciones, list):
             devoluciones = []
 
         devoluciones.append({
-            "equipo": codigo_encontrado,
-            "documento": cedula_buscar,
-            "estado_fisico": estado_fisico_original,
-            "fecha_devolucion": fecha_devolucion_hoy
+            "id_prestamo": codigo_encontrado,
+            "documento_estudiante": cedula_buscar,
+            "codigo_equipo": cod_equipo,
+            "fecha_devolucion": fecha_hoy
         })
 
         guardar_json("devoluciones.json", devoluciones)
 
         print(f"\n✅ ¡Devolución completada con éxito!")
-        print(f"   - Equipo: {codigo_encontrado}")
-        print(f"   - Estado del Equipo: {estado_fisico_original}")
-        print(f"   - Disponibilidad: disponible")
-        print(f"   - Fecha de devolución registrada: {fecha_devolucion_hoy}")
-        print("   - El equipo ha sido desvinculado del estudiante.")
-        
+        print(f"   - ID Préstamo: {codigo_encontrado}")
+        print(f"   - Fecha de devolución: {fecha_hoy}")
     except Exception as e:
         print(f"❌ Error al guardar los cambios: {e}")
