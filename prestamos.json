@@ -5,5 +5,12 @@
         "codigo_equipo": "237232",
         "fecha_prestamo": "2026-08-27 16:35:14",
         "estado_prestamo": "activo"
+    },
+    "PR-2": {
+        "id_prestamo": "PR-2",
+        "documento_estudiante": "2127122",
+        "codigo_equipo": "726326",
+        "fecha_prestamo": "2026-08-27 16:41:50",
+        "estado_prestamo": "activo"
     }
 }

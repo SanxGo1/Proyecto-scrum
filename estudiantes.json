@@ -22,5 +22,17 @@
         "nombre": "PATAS SUDADAS",
         "correo": "alejandrito@gmail.com",
         "programa_academico": "matematicas"
+    },
+    "2127122": {
+        "documento": "2127122",
+        "nombre": "PAOLA ARA",
+        "correo": "vente@gmail.com",
+        "programa_academico": "programacion"
+    },
+    "7777323": {
+        "documento": "7777323",
+        "nombre": "PP",
+        "correo": "trenta@gmail.com",
+        "programa_academico": "mecatronica"
     }
 }
