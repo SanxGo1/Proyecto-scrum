@@ -22,5 +22,13 @@
         "modelo": "2024",
         "estado": "\u00d3ptimo",
         "disponibilidad": "prestado"
+    },
+    {
+        "codigo_serie": "0973974",
+        "tipo": "Teclado",
+        "marca": "Apple",
+        "modelo": "0212",
+        "estado": "\u00d3ptimo",
+        "disponibilidad": "prestado"
     }
 ]
