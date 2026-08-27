@@ -1,13 +1,14 @@
 from pathlib import Path
 from guardar_datos import cargar_json, guardar_json
 
-
 ARCHIVO = Path(__file__).parent / "equipos.json"
+
 
 def pedir(msg, err="El valor no puede estar vacío."):
     while not (val := input(msg).strip()):
         print(err)
     return val
+
 
 def elegir(msg, opciones):
     for k, v in opciones.items():
@@ -16,18 +17,19 @@ def elegir(msg, opciones):
         print(f"Opción inválida ({', '.join(opciones)}).")
     return opciones[opt]
 
+
 def registrar_equipo():
     print("\n--- Registro de equipo tecnológico ---")
     serie = pedir("Código de serie del equipo: ")
 
     tipos = {
-        "1": "Computador", 
-        "2": "Monitor", 
+        "1": "Computador",
+        "2": "Monitor",
         "3": "Impresora",
-        "4": "Teclado", 
-        "5": "Mouse", 
+        "4": "Teclado",
+        "5": "Mouse",
         "6": "Portátil",
-        "7": "Tablet", 
+        "7": "Tablet",
         "8": "Otro",
     }
     tipo = elegir("Tipo (1-8): ", tipos)
@@ -41,10 +43,10 @@ def registrar_equipo():
         "4": "Apple",
         "5": "Samsung",
         "6": "Asus",
-        "7": "Acer", 
+        "7": "Acer",
         "8": "Epson",
-        "9": "Canon", 
-        "10": "Microsoft", 
+        "9": "Canon",
+        "10": "Microsoft",
         "11": "Otra",
     }
     marca = elegir("Marca (1-11): ", marcas)
@@ -52,9 +54,30 @@ def registrar_equipo():
         marca = pedir("Especifique marca: ")
 
     modelo = pedir("Modelo: ")
-    estado = elegir("Estado (1-3): ", {"1": "Bueno", "2": "Óptimo", "3": "delicado"})
+
+    
+    estados = {
+        "1": "Bueno",
+        "2": "Óptimo",
+        "3": "Delicado"
+    }
+    
+    print("\nSeleccione el estado del equipo:")
+    estado = elegir("Estado (1-3): ", estados)
+
+
+    if estado in ["Bueno", "Óptimo"]:
+        disponibilidad = "Disponible"
+    else:
+        disponibilidad = "No disponible"
 
     equipos = cargar_json(str(ARCHIVO), [])
+
+   
+    for eq in equipos:
+        if isinstance(eq, dict) and eq.get("codigo_serie") == serie:
+            print(f"❌ Error: Ya existe un equipo con la serie '{serie}'.")
+            return
 
     equipo = {
         "codigo_serie": serie,
@@ -62,12 +85,16 @@ def registrar_equipo():
         "marca": marca,
         "modelo": modelo,
         "estado": estado,
-        "disponibilidad": None
+        "disponibilidad": disponibilidad
     }
-    
+
     equipos.append(equipo)
     guardar_json(str(ARCHIVO), equipos)
     print("✅ Equipo registrado y guardado exitosamente.")
+
+
+if __name__ == "__main__":
+    registrar_equipo()
 
 
 
