@@ -1,8 +1,7 @@
 import json
 from pathlib import Path
 
-ARCHIVO_EQUIPOS = Path(__file__).parent / "equipos.json"
-
+ARCHIVO_EQUIPOS = Path(__file__).resolve().parent / "datos" / "equipos.json"
 
 def consultar_equipos(ruta=ARCHIVO_EQUIPOS):
     try:
@@ -22,24 +21,13 @@ def consultar_equipos(ruta=ARCHIVO_EQUIPOS):
     print("\n--- Equipos Tecnológicos Registrados ---")
     for idx, eq in enumerate(equipos, start=1):
         if isinstance(eq, dict):
-            # Se obtiene la disponibilidad; si no existe, se calcula según el estado o se muestra 'N/A'
-            disponibilidad = eq.get("disponibilidad") or eq.get("disponible")
-            
-            if disponibilidad is None:
-                # Alternativa: si en tu JSON no existe la clave 'disponibilidad', 
-                # se puede deducir del campo 'estado'
-                estado = eq.get("estado", "").lower()
-                disponibilidad = "Disponible" if estado == "bueno" or estado == "disponible" else "No Disponible"
-
+            disponibilidad = eq.get("disponibilidad", "disponible").upper()
             print(
-                f"{idx}. [{eq.get('tipo', 'N/A')}] {eq.get('marca', '')} {eq.get('modelo', '')} "
-                f"| Serie: {eq.get('codigo_serie', 'N/A')} "
-                f"| Estado: {eq.get('estado', 'N/A')} "
-                f"| Disponibilidad: {disponibilidad}"
+                f"{idx}. [{disponibilidad}] [{eq.get('tipo', 'N/A')}] {eq.get('marca', '')} {eq.get('modelo', '')} "
+                f"| Serie: {eq.get('codigo_serie', 'N/A')} | Físico: {eq.get('estado', 'N/A')}"
             )
         else:
             print(f"{idx}. {eq}")
-
 
 if __name__ == "__main__":
     consultar_equipos()
