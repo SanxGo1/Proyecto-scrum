@@ -3,7 +3,7 @@ from pathlib import Path
 from datetime import datetime
 from guardar_datos import guardar_json
 
-BASE_DIR = Path(__file__).resolve().parent
+BASE_DIR = Path(__file__).resolve().parent / "datos"
 RUTA_ESTUDIANTES = str(BASE_DIR / "estudiantes.json")
 RUTA_EQUIPOS = str(BASE_DIR / "equipos.json")
 RUTA_PRESTAMOS = str(BASE_DIR / "prestamos.json")
@@ -23,7 +23,6 @@ def leer_json_seguro(ruta, defecto):
             except:
                 pass
     return defecto
-
 
 def registrar_prestamo():
     print("\n--- Registro de Nuevo Préstamo ---")
