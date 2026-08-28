@@ -3,6 +3,7 @@ from pathlib import Path
 from datetime import datetime
 from guardar_datos import guardar_json
 
+# BASE_DIR actualizado
 BASE_DIR = Path(__file__).resolve().parent / "datos"
 RUTA_ESTUDIANTES = str(BASE_DIR / "estudiantes.json")
 RUTA_EQUIPOS = str(BASE_DIR / "equipos.json")
