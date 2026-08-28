@@ -5,7 +5,7 @@ from pathlib import Path
 def cargar_json(nombre_archivo, datos_por_defecto):
     if os.path.exists(nombre_archivo):
         try:
-            with open(nombre_archivo, "r", encoding="utf-8") as archivo:
+            with open(nombre_archivo, "r") as archivo:
                 return json.load(archivo)
         except json.JSONDecodeError:
             return datos_por_defecto
@@ -14,8 +14,9 @@ def cargar_json(nombre_archivo, datos_por_defecto):
         return datos_por_defecto
 
 def guardar_json(nombre_archivo, datos):
+    # Crear la carpeta contenedora si no existe
     ruta = Path(nombre_archivo)
     ruta.parent.mkdir(parents=True, exist_ok=True)
     
-    with open(nombre_archivo, "w", encoding="utf-8") as archivo:
-        json.dump(datos, archivo, indent=4, ensure_ascii=False)
+    with open(nombre_archivo, "w") as archivo:
+        json.dump(datos, archivo, indent=4)
