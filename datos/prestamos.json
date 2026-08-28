@@ -1,0 +1,10 @@
+{
+    "PR-1": {
+        "id_prestamo": "PR-1",
+        "documento_estudiante": "1234567",
+        "codigo_equipo": "123123",
+        "fecha_prestamo": "2026-08-28 01:21:44",
+        "estado_prestamo": "devuelto",
+        "fecha_devolucion": "2026-08-28 01:34:51"
+    }
+}

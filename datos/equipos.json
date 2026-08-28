@@ -1,0 +1,10 @@
+[
+    {
+        "codigo_serie": "123123",
+        "tipo": "Computador",
+        "marca": "HP",
+        "modelo": "2023",
+        "estado": "Bueno",
+        "disponibilidad": "disponible"
+    }
+]
