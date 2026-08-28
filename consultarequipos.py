@@ -1,7 +1,8 @@
 import json
 from pathlib import Path
 
-ARCHIVO_EQUIPOS = Path(__file__).resolve().parent / "datos" / "equipos.json"
+# Ruta actualizada a la carpeta datos
+ARCHIVO_EQUIPOS = Path(__file__).parent / "datos" / "equipos.json"
 
 def consultar_equipos(ruta=ARCHIVO_EQUIPOS):
     try:
@@ -21,10 +22,17 @@ def consultar_equipos(ruta=ARCHIVO_EQUIPOS):
     print("\n--- Equipos Tecnológicos Registrados ---")
     for idx, eq in enumerate(equipos, start=1):
         if isinstance(eq, dict):
-            disponibilidad = eq.get("disponibilidad", "disponible").upper()
+            disponibilidad = eq.get("disponibilidad") or eq.get("disponible")
+            
+            if disponibilidad is None:
+                estado = eq.get("estado", "").lower()
+                disponibilidad = "Disponible" if estado == "bueno" or estado == "disponible" else "No Disponible"
+
             print(
-                f"{idx}. [{disponibilidad}] [{eq.get('tipo', 'N/A')}] {eq.get('marca', '')} {eq.get('modelo', '')} "
-                f"| Serie: {eq.get('codigo_serie', 'N/A')} | Físico: {eq.get('estado', 'N/A')}"
+                f"{idx}. [{eq.get('tipo', 'N/A')}] {eq.get('marca', '')} {eq.get('modelo', '')} "
+                f"| Serie: {eq.get('codigo_serie', 'N/A')} "
+                f"| Estado: {eq.get('estado', 'N/A')} "
+                f"| Disponibilidad: {disponibilidad}"
             )
         else:
             print(f"{idx}. {eq}")
